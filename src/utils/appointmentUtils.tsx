@@ -18,12 +18,12 @@ export const getStatusIcon = (status: string) => {
 // Função para obter cor do tipo de resíduo
 export const getWasteTypeColor = (tipo: string): string => {
   const colors: Record<string, string> = {
-    'ORGANIC': 'bg-green-100 text-green-800 border-green-200',
-    'RECYCLABLE': 'bg-blue-100 text-blue-800 border-blue-200',
-    'ELECTRONIC': 'bg-purple-100 text-purple-800 border-purple-200',
-    'HAZARDOUS': 'bg-red-100 text-red-800 border-red-200',
-    'CONSTRUCTION': 'bg-orange-100 text-orange-800 border-orange-200',
-    'GENERAL': 'bg-gray-100 text-gray-800 border-gray-200'
+    ORGANIC: 'bg-green-100 text-green-800 border-green-200',
+    RECYCLABLE: 'bg-blue-100 text-blue-800 border-blue-200',
+    ELECTRONIC: 'bg-purple-100 text-purple-800 border-purple-200',
+    HAZARDOUS: 'bg-red-100 text-red-800 border-red-200',
+    CONSTRUCTION: 'bg-orange-100 text-orange-800 border-orange-200',
+    GENERAL: 'bg-gray-100 text-gray-800 border-gray-200',
   }
   return colors[tipo] || 'bg-gray-100 text-gray-800 border-gray-200'
 }
@@ -31,17 +31,22 @@ export const getWasteTypeColor = (tipo: string): string => {
 // Função para traduzir tipo de resíduo
 export const translateWasteType = (tipo: string): string => {
   const translations: Record<string, string> = {
-    'ORGANIC': 'Orgânico',
-    'RECYCLABLE': 'Reciclável',
-    'ELECTRONIC': 'Eletrônico',
-    'HAZARDOUS': 'Perigoso',
-    'CONSTRUCTION': 'Construção',
-    'GENERAL': 'Geral'
+    ORGANIC: 'Orgânico',
+    RECYCLABLE: 'Reciclável',
+    ELECTRONIC: 'Eletrônico',
+    HAZARDOUS: 'Perigoso',
+    CONSTRUCTION: 'Construção',
+    GENERAL: 'Geral',
   }
   return translations[tipo] || tipo
 }
 
+// Interface para agendamento
+export interface Agendamento {
+  status: StatusType
+  data: string // formato "dd/mm/yyyy"
 
+}
 
 // Função para formatar data mais elegante
 export const formatDateElegant = (dateStr: string) => {
@@ -76,8 +81,8 @@ export const getUrgencyInfo = (dateStr: string) => {
   return null
 }
 
-// Função para calcular estatísticas
-export const calculateStats = (agendamentos: any[]) => ({
+// Função para calcular estatísticas de agendamentos
+export const calculateStats = (agendamentos: Agendamento[]) => ({
   total: agendamentos.length,
   pendentes: agendamentos.filter(a => a.status === 'pendente').length,
   confirmados: agendamentos.filter(a => a.status === 'confirmado').length,
@@ -85,8 +90,8 @@ export const calculateStats = (agendamentos: any[]) => ({
   cancelados: agendamentos.filter(a => a.status === 'cancelado').length,
 })
 
-// Função para ordenar agendamentos
-export const sortAppointmentsByDate = (agendamentos: any[]) => {
+// Função para ordenar agendamentos por data
+export const sortAppointmentsByDate = (agendamentos: Agendamento[]) => {
   return [...agendamentos].sort((a, b) => {
     if (!a.data || !b.data) return 0
     const [dayA, monthA, yearA] = a.data.split('/')

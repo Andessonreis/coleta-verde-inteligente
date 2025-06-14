@@ -35,6 +35,15 @@ interface Usuario {
   }
 }
 
+interface AppointmentAPIResponse {
+  id: string | number;
+  scheduled_at: string;
+  wasteItem?: {
+    type: string;
+  };
+  status: string;
+}
+
 export default function AppointmentPage() {
   const [usuario, setUsuario] = useState<Usuario | null>(null)
   const [agendamentos, setAgendamentos] = useState<Agendamento[]>([])
@@ -86,8 +95,7 @@ export default function AppointmentPage() {
 
   useEffect(() => {
     /* const token = localStorage.getItem("token") */
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZUBnbWFpbC5jb20iLCJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsImlhdCI6MTc0OTgyODY1MSwiZXhwIjoxNzQ5ODMyMjUxfQ.U3WwAbCM1tMFBpxl3wf5_nA_DqH7Q_CPIVaFZ-qw1jc"
-
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZUBnbWFpbC5jb20iLCJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsImlhdCI6MTc0OTkyODY3MCwiZXhwIjoxNzQ5OTMyMjcwfQ.FpFaI0z4LkPDPKYB-bpOHYRrsCuRnE-Qw-0Lgkg0Etw"
     /* 
         if (!token) {
           alert("Você precisa estar logado.")
@@ -118,14 +126,14 @@ export default function AppointmentPage() {
         if (!res.ok) throw new Error("Erro ao carregar agendamentos")
         return res.json()
       })
-      .then((appointments: any[]) => {
+      .then((appointments: AppointmentAPIResponse[]) => {
         const ags: Agendamento[] = appointments.map(ag => ({
           id: ag.id,
           data: formatDate(ag.scheduled_at),
           tipoResiduo: ag.wasteItem?.type || "",
           status: traduzirStatus(ag.status),
-        }))
-        setAgendamentos(ags)
+        }));
+        setAgendamentos(ags);
       })
       .catch(() => alert("Erro ao carregar agendamentos."))
       .finally(() => setLoading(false))

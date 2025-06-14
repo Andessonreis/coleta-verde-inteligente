@@ -2,7 +2,7 @@
 
 import { Agendamento } from "@/components/feature/appointment/appointmentPage"
 import { Button } from "@/components/ui/button"
-import { X, Calendar, Package, Tag } from "lucide-react"
+import { X, Calendar, Package } from "lucide-react"
 
 interface AppointmentModalProps {
   aberto: boolean
@@ -31,7 +31,7 @@ export default function AppointmentModal({
   modoEdicao,
   atualizarAgendamento,
   salvarAgendamento,
-  enderecoUsuario, // Recebemos o endereço formatado do componente pai
+  enderecoUsuario, 
 }: AppointmentModalProps) {
   if (!aberto || !agendamento) return null
 

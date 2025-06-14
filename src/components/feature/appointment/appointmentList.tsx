@@ -1,4 +1,3 @@
-/* src/components/feature/appointment/appointmentList.tsx */
 "use client"
 
 import { Agendamento } from "@/components/feature/appointment/appointmentPage"
@@ -19,7 +18,6 @@ export default function AppointmentList({
   agendamentos,
   onEditar,
   onExcluir,
-  getStatusColor,
   statusOptions,
   novoAgendamento,
 }: AppointmentListProps) {
