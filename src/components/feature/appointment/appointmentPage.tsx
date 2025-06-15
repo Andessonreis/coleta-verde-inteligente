@@ -118,7 +118,7 @@ export default function AppointmentPage() {
       .catch(() => alert("Erro ao carregar dados do cidadão."))
 
     // Buscar agendamentos
-    fetch("http://localhost:8080/api/appointments", {
+    fetch("http://localhost:8080/api/appointments/citizen", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => {
