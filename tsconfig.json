@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/hooks/useColetas.js", "src/utils/statusUtils.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/hooks/useColetas.ts", "src/utils/statusUtils.js"],
   "exclude": ["node_modules"]
 }

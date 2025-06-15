@@ -17,7 +17,7 @@ import { ColetaRota } from "@/types"
 
 type RotasTabProps = {
   coletas: ColetaRota[]
-  onAtualizarStatus: (id: string, status: string) => void
+  onAtualizarStatus: (id: string, status: ColetaRota["status"], observacoes?: string) => void
   onReportarProblema: (coleta: ColetaRota) => void
 }
 
@@ -68,7 +68,7 @@ export function RotasTab({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Route className="h-5 w-5" />
-            Rota de Coletas - {new Date().toLocaleDateString("pt-BR")}
+            Rota de Coletas 
           </CardTitle>
         </CardHeader>
         <CardContent className="px-2 sm:px-4">
