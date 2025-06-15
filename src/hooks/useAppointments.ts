@@ -2,14 +2,23 @@ import { useState, useEffect } from 'react'
 import { Appointment, Employee } from '@/types/index'
 import { ApiService } from '@/services/ApiService'
 
-export const useAppointments = (token: string) => {
+export const useAppointments = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [employees, setEmployees] = useState<Employee[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
+  
+  const token = localStorage.getItem("token")
+  
+  if (!token) {
+    setError("Token não encontrado")
+    setLoading(false)
+    return { appointments, employees, loading, error, assignAppointment: async () => false }
+  }
+  
   const apiService = new ApiService(token)
-
+  
+  
   useEffect(() => {
     const fetchData = async () => {
       try {

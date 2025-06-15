@@ -94,14 +94,13 @@ export default function AppointmentPage() {
   }
 
   useEffect(() => {
-    /* const token = localStorage.getItem("token") */
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZUBnbWFpbC5jb20iLCJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsImlhdCI6MTc0OTkyODY3MCwiZXhwIjoxNzQ5OTMyMjcwfQ.FpFaI0z4LkPDPKYB-bpOHYRrsCuRnE-Qw-0Lgkg0Etw"
-    /* 
+     const token = localStorage.getItem("token") 
+    
         if (!token) {
           alert("Você precisa estar logado.")
           window.location.href = "/login"
           return
-        } */
+        } 
        
     // Buscar dados do usuário
     fetch("http://localhost:8080/api/citizens/me", {

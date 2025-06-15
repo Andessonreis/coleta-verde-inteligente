@@ -20,11 +20,11 @@ import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Truck } from "lucide-react"
 
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsImlhdCI6MTc0OTk1NzA3NCwiZXhwIjoxNzQ5OTYwNjc0fQ.5aQvBJi3lvKuD0yKehQFGWEF_e1oArq7HOqZ_06KWqk"
-
 export default function AdminPage() {
+  const TOKEN = localStorage.getItem("token") 
+
   // Hooks customizados
-  const { appointments, employees, loading, error, assignAppointment } = useAppointments(TOKEN)
+  const { appointments, employees, loading, error, assignAppointment } = useAppointments()
   const {
     searchTerm,
     setSearchTerm,

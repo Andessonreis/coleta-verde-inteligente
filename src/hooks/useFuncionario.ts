@@ -11,8 +11,9 @@ export function useFuncionario() {
     async function carregarPerfil() {
       try {
         setLoading(true)
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2FvLmZ1bmNpb25hcmlvQGdtYWlsLmNvbSIsImlzcyI6ImxvZ2luLWF1dGgtYXBpIiwiaWF0IjoxNzQ5OTYzNzI3LCJleHAiOjE3NDk5NjczMjd9.pnL51pyrTQJ21ON-DjQJbf79AEqvqGABh6m5DYhF540"
         
+        const token = localStorage.getItem("token") 
+
         const resposta = await fetch("http://localhost:8080/api/employees/me", {
           headers: {
             Authorization: `Bearer ${token}`,
