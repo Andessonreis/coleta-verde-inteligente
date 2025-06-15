@@ -12,8 +12,8 @@ export function useFuncionario() {
       try {
         setLoading(true)
         const token =
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2FvLmZ1bmNpb25hcmlvQGdtYWlsLmNvbSIsImlzcyI6ImxvZ2luLWF1dGgtYXBpIiwiaWF0IjoxNzQ5OTMyNDY0LCJleHAiOjE3NDk5MzYwNjR9.4SC_2ulec2zSzi2rHJK20bJ2v2hFc_hXnbGtkTSDz5c"
-
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2FvLmZ1bmNpb25hcmlvQGdtYWlsLmNvbSIsImlzcyI6ImxvZ2luLWF1dGgtYXBpIiwiaWF0IjoxNzQ5OTQxMDQ4LCJleHAiOjE3NDk5NDQ2NDh9.XQLl-ienpRhnuxk8Rety4VrU5uUHjX6Esmmq8_9nOoA"
+          
         const resposta = await fetch("http://localhost:8080/api/employees/me", {
           headers: {
             Authorization: `Bearer ${token}`,
