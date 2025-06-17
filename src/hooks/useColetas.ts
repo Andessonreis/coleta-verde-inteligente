@@ -1,32 +1,32 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { ColetaRota } from "@/types/coleta"
-
-const TOKEN =
-  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2FvLmZ1bmNpb25hcmlvQGdtYWlsLmNvbSIsImlzcyI6ImxvZ2luLWF1dGgtYXBpIiwiaWF0IjoxNzQ5OTYzNzI3LCJleHAiOjE3NDk5NjczMjd9.pnL51pyrTQJ21ON-DjQJbf79AEqvqGABh6m5DYhF540"
+import { converterStatus, converterStatusParaBackend } from "@/utils/statusTranslator"
 
 export function useColetas() {
   const [coletas, setColetas] = useState<ColetaRota[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchColetas()
-  }, [])
+  const getToken = () => {
+    const token = localStorage.getItem("token")
+    return token ? `Bearer ${token}` : null
+  }
 
-  const fetchColetas = async () => {
+  const fetchColetas = useCallback(async () => {
     try {
       setLoading(true)
+
+      const token = getToken()
+      if (!token) throw new Error("Token não encontrado")
 
       const response = await fetch("http://localhost:8080/api/appointments/employee", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN
-        }
+          Authorization: token,
+        },
       })
 
-      if (!response.ok) {
-        throw new Error(`Erro HTTP: ${response.status}`)
-      }
+      if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`)
 
       const data = await response.json()
 
@@ -36,15 +36,15 @@ export function useColetas() {
         tipoResiduo: item.wasteItem.description,
         horarioAgendado: new Date(item.scheduledAt).toLocaleString("pt-BR", {
           dateStyle: "short",
-          timeStyle: "short"
+          timeStyle: "short",
         }),
-        status: converterStatus(item.status), // converter do backend para frontend
+        status: converterStatus(item.status),
         observacoes: item.observacoes || "",
         cidadao: {
           nome: item.requester.name,
-          telefone: item.requester.phone
+          telefone: item.requester.phone,
         },
-        coordenadas: undefined // TODO: implementar depois
+        coordenadas: undefined,
       }))
 
       setColetas(mappedColetas)
@@ -53,7 +53,11 @@ export function useColetas() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    fetchColetas()
+  }, [fetchColetas])
 
   const atualizarStatusColeta = async (
     id: string,
@@ -61,18 +65,22 @@ export function useColetas() {
     observacoes?: string
   ) => {
     try {
+      const token = getToken()
+      if (!token) throw new Error("Token não encontrado")
+
       const response = await fetch(`http://localhost:8080/api/appointments/${id}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: TOKEN,
+          Authorization: token,
         },
-        body: JSON.stringify({ status: converterStatusParaBackend(novoStatus), observacoes }),
+        body: JSON.stringify({
+          status: converterStatusParaBackend(novoStatus),
+          observacoes,
+        }),
       })
 
-      if (!response.ok) {
-        throw new Error(`Erro ao atualizar status: ${response.status}`)
-      }
+      if (!response.ok) throw new Error(`Erro ao atualizar status: ${response.status}`)
 
       const updatedColeta = await response.json()
 
@@ -81,7 +89,7 @@ export function useColetas() {
           coleta.id === id
             ? {
                 ...coleta,
-                status: converterStatus(updatedColeta.status), // converte backend → frontend
+                status: converterStatus(updatedColeta.status),
                 observacoes: updatedColeta.observacoes || observacoes || "",
               }
             : coleta
@@ -100,32 +108,3 @@ export function useColetas() {
   }
 }
 
-function converterStatus(statusBackend: string): ColetaRota["status"] {
-  switch (statusBackend) {
-    case "SCHEDULED":
-      return "pendente"
-    case "IN_PROGRESS":
-      return "em_andamento"
-    case "COMPLETED":
-      return "concluida"
-    case "CANCELED":
-      return "problema"
-    default:
-      return "pendente"
-  }
-}
-
-function converterStatusParaBackend(statusInterno: ColetaRota["status"]): string {
-  switch (statusInterno) {
-    case "pendente":
-      return "SCHEDULED"
-    case "em_andamento":
-      return "IN_PROGRESS"
-    case "concluida":
-      return "COMPLETED"
-    case "problema":
-      return "CANCELED"
-    default:
-      return "SCHEDULED"
-  }
-}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+
 // Interfaces
 export interface FormData {
   name: string
@@ -29,8 +30,6 @@ interface ViaCEPResponse {
 // Hook customizado para gerenciar o formulário de signup
 export function useSignupForm() {
   const router = useRouter()
-  // Estados
-  // Estados
   const [currentStep, setCurrentStep] = useState(0)
   const [formData, setFormData] = useState<FormData>({
     name: "",

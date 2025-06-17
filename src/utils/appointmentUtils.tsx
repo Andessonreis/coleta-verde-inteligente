@@ -15,6 +15,7 @@ export const getStatusIcon = (status: string) => {
   return <IconComponent className="w-4 h-4" />
 }
 
+
 // Função para obter cor do tipo de resíduo
 export const getWasteTypeColor = (tipo: string): string => {
   const colors: Record<string, string> = {
@@ -46,23 +47,6 @@ export interface Agendamento {
   status: StatusType
   data: string // formato "dd/mm/yyyy"
 
-}
-
-// Função para formatar data mais elegante
-export const formatDateElegant = (dateStr: string) => {
-  if (!dateStr) return { day: '--', month: '--', weekday: '--' }
-  
-  const [day, month, year] = dateStr.split('/')
-  const date = new Date(Number(year), Number(month) - 1, Number(day))
-  
-  const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
-  const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
-  
-  return {
-    day: String(day).padStart(2, '0'),
-    month: months[date.getMonth()],
-    weekday: weekdays[date.getDay()]
-  }
 }
 
 // Função para calcular urgência

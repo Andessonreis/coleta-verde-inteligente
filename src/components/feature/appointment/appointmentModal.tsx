@@ -1,7 +1,7 @@
 "use client"
 
-import { Agendamento } from "@/components/feature/appointment/appointmentPage"
 import { Button } from "@/components/ui/button"
+import { tiposResiduoOptions, type TipoResiduoValue } from "@/types/tiposResiduoOptions"
 import { X, Calendar, Package } from "lucide-react"
 
 interface AppointmentModalProps {
@@ -14,15 +14,6 @@ interface AppointmentModalProps {
   statusOptions: { value: string; label: string; color: string }[]
   enderecoUsuario: string 
 }
-
-const tiposResiduoOptions = [
-  { value: 'ORGANIC', label: 'Orgânico' },
-  { value: 'RECYCLABLE', label: 'Reciclável' },
-  { value: 'ELECTRONIC', label: 'Eletrônico' },
-  { value: 'HAZARDOUS', label: 'Perigoso' },
-  { value: 'CONSTRUCTION', label: 'Construção' },
-  { value: 'GENERAL', label: 'Geral' }
-]
 
 export default function AppointmentModal({
   aberto,
@@ -93,19 +84,17 @@ export default function AppointmentModal({
               Tipo de Resíduo
             </label>
             <select
-              id="tipoResiduo"
-              value={agendamento.tipoResiduo}
-              onChange={(e) => atualizarAgendamento("tipoResiduo", e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-              required
-            >
-              <option value="">Selecione o tipo de resíduo</option>
-              {tiposResiduoOptions.map((tipo) => (
-                <option key={tipo.value} value={tipo.value}>
-                  {tipo.label}
-                </option>
-              ))}
-            </select>
+                id="tipoResiduo"
+                value={agendamento.tipoResiduo}
+                onChange={(e) => atualizarAgendamento("tipoResiduo", e.target.value as TipoResiduoValue)}
+              >
+                <option value="">Selecione o tipo de resíduo</option>
+                {tiposResiduoOptions.map((tipo) => (
+                  <option key={tipo.value} value={tipo.value}>
+                    {tipo.label}
+                  </option>
+                ))}
+              </select>
           </div>
 
           {/* Endereço (apenas exibição) */}

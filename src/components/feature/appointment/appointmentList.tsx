@@ -1,6 +1,5 @@
 "use client"
 
-import { Agendamento } from "@/components/feature/appointment/appointmentPage"
 import { Button } from "@/components/ui/button"
 import { Calendar, Timer, CheckCircle2 } from "lucide-react"
 import AppointmentCard from "@/components/feature/appointment/appointmentCard"

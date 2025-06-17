@@ -1,33 +1,35 @@
-import { useState, useEffect } from 'react'
-import { Appointment, Employee } from '@/types/index'
-import { ApiService } from '@/services/ApiService'
+import { useState, useEffect } from "react"
+import { Appointment, Employee } from "@/types/index"
+import { ApiService } from "@/services/ApiService"
 
 export const useAppointments = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [employees, setEmployees] = useState<Employee[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  
-  const token = localStorage.getItem("token")
-  
-  if (!token) {
-    setError("Token não encontrado")
-    setLoading(false)
-    return { appointments, employees, loading, error, assignAppointment: async () => false }
-  }
-  
-  const apiService = new ApiService(token)
-  
-  
+
+  const [token, setToken] = useState<string | null>(null)
+
   useEffect(() => {
+    const localToken = localStorage.getItem("token")
+    if (!localToken) {
+      setError("Token não encontrado")
+      setLoading(false)
+      return
+    }
+
+    setToken(localToken)
+
+    const apiService = new ApiService(localToken)
+
     const fetchData = async () => {
       try {
         setLoading(true)
         setError(null)
-        
+
         const [appointmentsData, employeesData] = await Promise.all([
           apiService.fetchAppointments(),
-          apiService.fetchEmployees()
+          apiService.fetchEmployees(),
         ])
 
         setAppointments(appointmentsData)
@@ -41,18 +43,21 @@ export const useAppointments = () => {
     }
 
     fetchData()
-  }, [token])
+  }, [])
 
   const assignAppointment = async (appointmentId: string, employeeId: string) => {
+    if (!token) return false
+    const apiService = new ApiService(token)
+
     try {
       const success = await apiService.assignAppointment(appointmentId, employeeId)
-      
+
       if (success) {
         const employee = employees.find(emp => emp.id === employeeId)
-        setAppointments(prev => 
-          prev.map(apt => 
-            apt.id === appointmentId 
-              ? { ...apt, employee } 
+        setAppointments(prev =>
+          prev.map(apt =>
+            apt.id === appointmentId
+              ? { ...apt, employee }
               : apt
           )
         )
@@ -70,6 +75,6 @@ export const useAppointments = () => {
     employees,
     loading,
     error,
-    assignAppointment
+    assignAppointment,
   }
 }

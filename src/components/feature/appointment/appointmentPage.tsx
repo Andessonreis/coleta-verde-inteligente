@@ -4,45 +4,17 @@ import { useState, useEffect } from "react"
 import AppointmentList from "@/components/feature/appointment/appointmentList"
 import AppointmentModal from "@/components/feature/appointment/appointmentModal"
 import Navbar from "@/components/ui/navbar"
+import { fetchCitizenMe } from "@/http/routes/citizens/me"
+import { fetchCitizenAppointments } from "@/http/routes/appointments/citizen"
+import { getStatusColor, statusOptions, type StatusAgendamentoValue } from "@/types/statusOptions"
+import {
+  formatDate,
+  formatarTelefone,
+  formatarEndereco,
+} from "@/utils/formatters"
+import { salvarAgendamentoService } from "@/http/routes/appointments/create"
+import { traduzirStatus } from "@/utils/statusTranslator"
 
-export interface Agendamento {
-  id: string | number
-  data: string
-  tipoResiduo: string
-  status: string
-}
-
-const statusOptions = [
-  { value: "pendente", label: "Pendente", color: "bg-yellow-100 text-yellow-800" },
-  { value: "confirmado", label: "Confirmado", color: "bg-green-100 text-green-800" },
-  { value: "concluido", label: "Concluído", color: "bg-blue-100 text-blue-800" },
-  { value: "cancelado", label: "Cancelado", color: "bg-red-100 text-red-800" },
-]
-
-interface Usuario {
-  name: string
-  email: string
-  phone: string
-  status: string
-  address?: {
-    publicPlace: string
-    street: string
-    number: string
-    complement: string
-    city: string
-    uf: string
-    zipCode: string
-  }
-}
-
-interface AppointmentAPIResponse {
-  id: string | number;
-  scheduled_at: string;
-  wasteItem?: {
-    type: string;
-  };
-  status: string;
-}
 
 export default function AppointmentPage() {
   const [usuario, setUsuario] = useState<Usuario | null>(null)
@@ -52,98 +24,52 @@ export default function AppointmentPage() {
   const [modoEdicao, setModoEdicao] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  // Formatar data do backend para formato dd/mm/yyyy
-  const formatDate = (dateTime: string) => {
-    if (!dateTime) return ""
-    const [date] = dateTime.split("T")
-    return date.split("-").reverse().join("/")
-  }
-
-  const traduzirStatus = (status: string) => {
-    const map: Record<string, string> = {
-      SCHEDULED: "pendente",
-      CANCELED: "cancelado",
-      COMPLETED: "concluido",
-      NOT_COMPLETED: "cancelado",
-    }
-    return map[status] || status.toLowerCase()
-  }
-
-  const formatarTelefone = (phone: string) => {
-    if (!phone) return ""
-    // Remove +55 e formata como (XX) XXXXX-XXXX
-    const cleaned = phone.replace("+55", "")
-    if (cleaned.length === 11) {
-      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`
-    }
-    return phone
-  }
-
-  const formatarEndereco = (address: Usuario['address']) => {
-    if (!address) return "Endereço não cadastrado"
-    const { publicPlace, street, number, complement, city, uf } = address
-    let endereco = `${publicPlace || street}, ${number}`
-    if (complement) endereco += `, ${complement}`
-    endereco += ` - ${city}/${uf}`
-    return endereco
-  }
-
   // Verificar se o agendamento pode ser editado (apenas pendente ou confirmado)
   const podeEditarAgendamento = (status: string) => {
     return status === "pendente" || status === "confirmado"
   }
 
   useEffect(() => {
-     const token = localStorage.getItem("token") 
-    
-        if (!token) {
-          alert("Você precisa estar logado.")
-          window.location.href = "/login"
-          return
-        } 
-       
-    // Buscar dados do usuário
-    fetch("http://localhost:8080/api/citizens/me", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(res => {
-        if (!res.ok) throw new Error("Erro ao carregar dados do cidadão")
-        return res.json()
-      })
-      .then(data => {
-        console.log("Dados do cidadão:", data) 
-        setUsuario(data)
-      })
-    
-      .catch(() => alert("Erro ao carregar dados do cidadão."))
+    const token = localStorage.getItem("token")
 
-    // Buscar agendamentos
-    fetch("http://localhost:8080/api/appointments/citizen", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(res => {
-        if (!res.ok) throw new Error("Erro ao carregar agendamentos")
-        return res.json()
-      })
-      .then((appointments: AppointmentAPIResponse[]) => {
-        const ags: Agendamento[] = appointments.map(ag => ({
+    if (!token) {
+      alert("Você precisa estar logado.")
+      window.location.href = "/login"
+      return
+    }
+    const tokenStr: string = token
+
+    async function loadData() {
+      try {
+        const userData = await fetchCitizenMe(tokenStr)
+        setUsuario(userData)
+
+        const appointmentsData = await fetchCitizenAppointments(tokenStr)
+        const ags = appointmentsData.map((ag: AppointmentAPIResponse) => ({
           id: ag.id,
           data: formatDate(ag.scheduled_at),
           tipoResiduo: ag.wasteItem?.type || "",
           status: traduzirStatus(ag.status),
-        }));
-        setAgendamentos(ags);
-      })
-      .catch(() => alert("Erro ao carregar agendamentos."))
-      .finally(() => setLoading(false))
+        }))
+        setAgendamentos(ags)
+      } catch (error) {
+        alert("Erro ao carregar dados do cidadão ou agendamentos.")
+        console.error(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadData()
   }, [])
+
 
   const novoAgendamento = () => {
     setAgendamentoAtual({
       id: Date.now(),
       data: "",
       tipoResiduo: "",
-      status: "pendente", 
+      status: "pendente",
     })
     setModoEdicao(false)
     setDialogoAberto(true)
@@ -161,10 +87,9 @@ export default function AppointmentPage() {
     setDialogoAberto(true)
   }
   
-/* TODO: Refazer a mundaça de status do agendamento  */
   const excluirAgendamento = (id: number | string) => {
     const agendamento = agendamentos.find(a => a.id === id)
-    
+
     // Verificar se o agendamento pode ser excluído
     if (agendamento && !podeEditarAgendamento(agendamento.status)) {
       alert("Este agendamento não pode ser excluído pois já foi concluído ou cancelado.")
@@ -174,56 +99,30 @@ export default function AppointmentPage() {
     setAgendamentos((prev) =>
       prev.map((a) => (a.id === id ? { ...a, status: "CANCELED" } : a))
     )
-    
+
   }
 
   const salvarAgendamento = async () => {
     if (!agendamentoAtual) return
   
-    const token = localStorage.getItem("token") || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZUBnbWFpbC5jb20iLCJpc3MiOiJsb2dpbi1hdXRoLWFwaSIsImlhdCI6MTc0OTgyODY1MSwiZXhwIjoxNzQ5ODMyMjUxfQ.U3WwAbCM1tMFBpxl3wf5_nA_DqH7Q_CPIVaFZ-qw1jc"
-    const urlBase = "http://localhost:8080/api/appointments"
-  
-    const payload = {
-      scheduled_at: new Date(agendamentoAtual.data).toISOString(),
-      optional_photo_url: "http://example.com/photo2.jpg",
-      waste: {
-        type: agendamentoAtual.tipoResiduo,
-        description: "Descrição opcional aqui",
-      },
-      // Não incluir status no payload - será controlado pelo backend
+    const token = localStorage.getItem("token")
+    if (!token) {
+      alert("Token não encontrado")
+      return
     }
   
     try {
-      const response = await fetch(
-        modoEdicao ? `${urlBase}/${agendamentoAtual.id}` : urlBase,
-        {
-          method: modoEdicao ? "PUT" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(payload),
-        }
+      const agendamentoFormatado = await salvarAgendamentoService(
+        agendamentoAtual,
+        token,
+        modoEdicao
       )
   
-      if (!response.ok) throw new Error("Erro ao salvar agendamento")
-  
-      const agendamentoSalvo = await response.json()
-  
-      const agendamentoFormatado: Agendamento = {
-        id: agendamentoSalvo.id,
-        data: formatDate(agendamentoSalvo.scheduled_at),
-        tipoResiduo: agendamentoSalvo.wasteItem?.type || "",
-        status: traduzirStatus(agendamentoSalvo.status), // Status vem do backend
-      }
-  
-      if (modoEdicao) {
-        setAgendamentos((prev) =>
-          prev.map((ag) => (ag.id === agendamentoFormatado.id ? agendamentoFormatado : ag))
-        )
-      } else {
-        setAgendamentos((prev) => [...prev, agendamentoFormatado])
-      }
+      setAgendamentos((prev) =>
+        modoEdicao
+          ? prev.map((ag) => (ag.id === agendamentoFormatado.id ? agendamentoFormatado : ag))
+          : [...prev, agendamentoFormatado]
+      )
   
       setDialogoAberto(false)
     } catch (error) {
@@ -232,13 +131,14 @@ export default function AppointmentPage() {
     }
   }
   
+
   const atualizarAgendamentoAtual = (campo: keyof Agendamento, valor: string) => {
     if (agendamentoAtual) {
       // Não permitir alteração do status
       if (campo === 'status') {
         return
       }
-      
+
       setAgendamentoAtual({
         ...agendamentoAtual,
         [campo]: valor,
@@ -246,9 +146,7 @@ export default function AppointmentPage() {
     }
   }
 
-  const getStatusColor = (status: string) => {
-    return statusOptions.find((opt) => opt.value === status)?.color || "bg-gray-100 text-gray-800"
-  }
+
 
   if (loading) {
     return (
@@ -283,11 +181,10 @@ export default function AppointmentPage() {
                 <h2 className="text-xl font-semibold text-gray-900 truncate">
                   {usuario?.name || "Usuário"}
                 </h2>
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  usuario?.status === 'ACTIVE' 
-                    ? 'bg-green-100 text-green-800' 
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${usuario?.status === 'ACTIVE'
+                    ? 'bg-green-100 text-green-800'
                     : 'bg-gray-100 text-gray-800'
-                }`}>
+                  }`}>
                   {usuario?.status === 'ACTIVE' ? 'Ativo' : 'Inativo'}
                 </span>
               </div>
@@ -354,7 +251,7 @@ export default function AppointmentPage() {
             getStatusColor={getStatusColor}
             statusOptions={statusOptions}
             novoAgendamento={novoAgendamento}
-         
+
           />
         </div>
       </div>

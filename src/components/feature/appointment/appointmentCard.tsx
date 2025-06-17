@@ -1,7 +1,10 @@
 "use client"
 
-import { Agendamento } from "@/components/feature/appointment/appointmentPage"
 import { Button } from "@/components/ui/button"
+import { tiposResiduoOptions } from "@/types/tiposResiduoOptions"
+import { getStatusIcon } from "@/utils/appointmentUtils"
+import { formatDateElegant } from "@/utils/formatters"
+
 import { Trash2, Package, Edit3, AlertCircle, CheckCircle2, XCircle, Timer } from "lucide-react"
 
 interface AppointmentCardProps {
@@ -11,63 +14,15 @@ interface AppointmentCardProps {
   statusOptions: { value: string; label: string; color: string }[]
 }
 
-// Função para obter ícone do status
-const getStatusIcon = (status: string) => {
-  switch (status) {
-    case 'pendente':
-      return <Timer className="w-4 h-4" />
-    case 'confirmado':
-      return <CheckCircle2 className="w-4 h-4" />
-    case 'concluido':
-      return <CheckCircle2 className="w-4 h-4" />
-    case 'cancelado':
-      return <XCircle className="w-4 h-4" />
-    default:
-      return <AlertCircle className="w-4 h-4" />
-  }
-}
-
 // Função para obter cor do tipo de resíduo
 const getWasteTypeColor = (tipo: string) => {
-  const colors: Record<string, string> = {
-    'ORGANIC': 'bg-green-100 text-green-800 border-green-200',
-    'RECYCLABLE': 'bg-blue-100 text-blue-800 border-blue-200',
-    'ELECTRONIC': 'bg-purple-100 text-purple-800 border-purple-200',
-    'HAZARDOUS': 'bg-red-100 text-red-800 border-red-200',
-    'CONSTRUCTION': 'bg-orange-100 text-orange-800 border-orange-200',
-    'GENERAL': 'bg-gray-100 text-gray-800 border-gray-200'
-  }
-  return colors[tipo] || 'bg-gray-100 text-gray-800 border-gray-200'
+ return tiposResiduoOptions.find(opt => opt.value === tipo)?.color
+    || 'bg-gray-100 text-gray-800 border-gray-200'
 }
 
 // Função para traduzir tipo de resíduo
 const translateWasteType = (tipo: string) => {
-  const translations: Record<string, string> = {
-    'ORGANIC': 'Orgânico',
-    'RECYCLABLE': 'Reciclável',
-    'ELECTRONIC': 'Eletrônico',
-    'HAZARDOUS': 'Perigoso',
-    'CONSTRUCTION': 'Construção',
-    'GENERAL': 'Geral'
-  }
-  return translations[tipo] || tipo
-}
-
-// Função para formatar data mais elegante
-const formatDateElegant = (dateStr: string) => {
-  if (!dateStr) return { day: '--', month: '--', weekday: '--' }
-  
-  const [day, month, year] = dateStr.split('/')
-  const date = new Date(Number(year), Number(month) - 1, Number(day))
-  
-  const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
-  const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
-  
-  return {
-    day: String(day).padStart(2, '0'),
-    month: months[date.getMonth()],
-    weekday: weekdays[date.getDay()]
-  }
+  return tiposResiduoOptions.find(opt => opt.value === tipo)?.label || tipo
 }
 
 export default function AppointmentCard({ 
