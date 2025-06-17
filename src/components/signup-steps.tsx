@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Eye, EyeOff, Loader2, User, MapPin, CheckCircle, Leaf } from "lucide-react"
+import { CircleAlertIcon } from "lucide-react"
+
 import { useState } from "react"
 import type { FormData } from "@/hooks/useSignupForm"
 
@@ -204,7 +206,20 @@ export function PersonalDataStep({ formData, errors, updateFormData, passwordStr
           </Button>
         </div>
         <PasswordStrengthIndicator strength={passwordStrength} password={formData.password} />
-        {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+        {errors.password && (
+              <div className="mt-2 rounded-md border border-red-500/50 px-4 py-3 text-red-600">
+                <div className="flex gap-3">
+                  <CircleAlertIcon
+                    className="mt-0.5 shrink-0 opacity-60"
+                    size={16}
+                    aria-hidden="true"
+                  />
+                  <p className="text-sm font-medium">
+                    {errors.password}
+                  </p>
+                </div>
+              </div>
+            )}
       </div>
 
       <div>
@@ -227,7 +242,20 @@ export function PersonalDataStep({ formData, errors, updateFormData, passwordStr
             {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </Button>
         </div>
-        {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
+        {errors.confirmPassword && (
+          <div className="mt-2 rounded-md border border-red-500/50 px-4 py-3 text-red-600">
+            <div className="flex gap-3">
+              <CircleAlertIcon
+                className="mt-0.5 shrink-0 opacity-60"
+                size={16}
+                aria-hidden="true"
+              />
+              <p className="text-sm font-medium">
+                {errors.confirmPassword}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
