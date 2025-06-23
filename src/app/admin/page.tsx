@@ -23,8 +23,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Truck } from "lucide-react"
 import ComponentCalendar from "@/components/calendar"
 
+// Importação para cadastrar funcionário
+import CadastrarFuncionarioModal from "@/components/feature/employee/cadastrarFuncionarioModal"
+import { UserPlus } from "lucide-react"
+
+
 export default function AdminPage() {
   const [token, setToken] = useState<string | null>(null)
+  // Importação para cadastrar funcionário
+  const [openRegisterModal, setOpenRegisterModal] = useState(false)
+
   const router = useRouter()
 
   // Hooks customizados
@@ -123,16 +131,26 @@ export default function AdminPage() {
               <p className="text-xs text-gray-500">Gerencie agendamentos, funcionários</p>
             </div>
           </div>
-
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            size="sm"
-            className="flex items-center gap-2 text-gray-600 hover:text-red-600 hover:border-red-300"
-          >
-            <LogOut className="h-4 w-4" />
-            Sair
-          </Button>
+           
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setOpenRegisterModal(true)}
+              size="sm"
+              className="flex items-center gap-2 bg-green-600 text-white hover:bg-green-700"
+            >
+              <UserPlus className="h-4 w-4" />
+              Cadastrar Funcionário
+            </Button>
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2 text-gray-600 hover:text-red-600 hover:border-red-300"
+            >
+              <LogOut className="h-4 w-4" />
+              Sair
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -248,6 +266,14 @@ export default function AdminPage() {
         onEmployeeChange={setSelectedEmployee}
         onConfirm={handleAssignConfirm}
       />
+
+      return (
+        <CadastrarFuncionarioModal
+          open={openRegisterModal}
+          onOpenChange={setOpenRegisterModal}
+        />
+      )
     </div>
   )
+  
 }
