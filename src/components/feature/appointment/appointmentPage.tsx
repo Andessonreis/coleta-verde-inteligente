@@ -14,6 +14,8 @@ import {
 } from "@/utils/formatters"
 import { salvarAgendamentoService } from "@/http/routes/appointments/create"
 import { traduzirStatus } from "@/utils/statusTranslator"
+import type { Usuario } from "@/types/citizen"
+import type { Agendamento } from "@/types/appointment"
 
 
 export default function AppointmentPage() {
@@ -266,7 +268,8 @@ export default function AppointmentPage() {
           salvarAgendamento={salvarAgendamento}
           statusOptions={statusOptions}
           enderecoUsuario={formatarEndereco(usuario?.address)}
-
+          agendamentos={agendamentos} // Adicionar esta linha
+          usuario={usuario} // Adicionar esta linha
         />
       )}
     </div>
