@@ -1,14 +1,12 @@
+"use client"
+
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import {
-  MapPin,
-  Navigation,
-  Phone,
-  CheckCircle,
-  AlertTriangle,
-} from "lucide-react"
+import { MapPin, Navigation, Phone, CheckCircle, AlertTriangle } from "lucide-react"
 import { getStatusColor, getStatusText } from "@/utils/statusUtils"
-import { ColetaRota } from "@/types"
+import type { ColetaRota } from "@/types"
+import { NavigationDialog } from "./navigation-dialog"
 
 type ColetaCardProps = {
   coleta: ColetaRota
@@ -17,24 +15,32 @@ type ColetaCardProps = {
   onReportarProblema: () => void
 }
 
-export function ColetaCard({
-  coleta,
-  onIniciar,
-  onConcluir,
-  onReportarProblema,
-}: ColetaCardProps) {
+export function ColetaCard({ coleta, onIniciar, onConcluir, onReportarProblema }: ColetaCardProps) {
+  const [showNavigationDialog, setShowNavigationDialog] = useState(false)
+
   return (
-    <div className="border rounded-lg p-4 hover:bg-gray-50 transition-colors duration-200">
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-        <ColetaInfo coleta={coleta} />
-        <ColetaActions
-          coleta={coleta}
-          onIniciar={onIniciar}
-          onConcluir={onConcluir}
-          onReportarProblema={onReportarProblema}
-        />
+    <>
+      <div className="border rounded-lg p-4 hover:bg-gray-50 transition-colors duration-200">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+          <ColetaInfo coleta={coleta} />
+          <ColetaActions
+            coleta={coleta}
+            onIniciar={onIniciar}
+            onConcluir={onConcluir}
+            onReportarProblema={onReportarProblema}
+            onNavigate={() => setShowNavigationDialog(true)}
+          />
+        </div>
       </div>
-    </div>
+
+      <NavigationDialog
+        isOpen={showNavigationDialog}
+        onClose={() => setShowNavigationDialog(false)}
+        address={coleta.endereco}
+        coordinates={coleta.coordenadas}
+        title={`Navegar para ${coleta.cidadao.nome}`}
+      />
+    </>
   )
 }
 
@@ -42,9 +48,7 @@ function ColetaInfo({ coleta }: { coleta: ColetaRota }) {
   return (
     <div className="flex-1">
       <div className="flex items-center flex-wrap gap-2 mb-2">
-        <Badge className={getStatusColor(coleta.status)}>
-          {getStatusText(coleta.status)}
-        </Badge>
+        <Badge className={getStatusColor(coleta.status)}>{getStatusText(coleta.status)}</Badge>
         <span className="text-sm font-medium">{coleta.horarioAgendado}</span>
         <span className="text-sm text-gray-600">- {coleta.tipoResiduo}</span>
       </div>
@@ -70,47 +74,36 @@ function ColetaInfo({ coleta }: { coleta: ColetaRota }) {
     </div>
   )
 }
+
 function ColetaActions({
   coleta,
   onIniciar,
   onConcluir,
   onReportarProblema,
-}: ColetaCardProps) {
+  onNavigate,
+}: ColetaCardProps & { onNavigate: () => void }) {
   return (
     <div className="flex flex-col gap-2 w-full md:w-auto">
-      <Button size="sm" variant="outline" className="justify-start">
+      <Button size="sm" variant="outline" className="justify-start" onClick={onNavigate}>
         <Navigation className="h-4 w-4 mr-1" />
         Navegar
       </Button>
 
       {coleta.status === "pendente" && (
-        <Button
-          size="sm"
-          onClick={onIniciar}
-          className="bg-blue-600 hover:bg-blue-700 text-white"
-        >
+        <Button size="sm" onClick={onIniciar} className="bg-blue-600 hover:bg-blue-700 text-white">
           Iniciar
         </Button>
       )}
 
       {coleta.status === "em_andamento" && (
-        <Button
-          size="sm"
-          onClick={onConcluir}
-          className="bg-green-600 hover:bg-green-700 text-white"
-        >
+        <Button size="sm" onClick={onConcluir} className="bg-green-600 hover:bg-green-700 text-white">
           <CheckCircle className="h-4 w-4 mr-1" />
           Concluir
         </Button>
       )}
 
       {(coleta.status === "pendente" || coleta.status === "em_andamento") && (
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={onReportarProblema}
-          className="text-red-600 hover:text-red-700"
-        >
+        <Button size="sm" variant="outline" onClick={onReportarProblema} className="text-red-600 hover:text-red-700">
           <AlertTriangle className="h-4 w-4 mr-1" />
           Problema
         </Button>
