@@ -17,6 +17,8 @@ import { traduzirStatus } from "@/utils/statusTranslator"
 import type { Usuario } from "@/types/citizen"
 import type { Agendamento } from "@/types/appointment"
 
+//import para cancelar agendamento
+import { cancelarAgendamentoService } from "@/http/routes/appointments/cancel"
 
 export default function AppointmentPage() {
   const [usuario, setUsuario] = useState<Usuario | null>(null)
@@ -89,19 +91,34 @@ export default function AppointmentPage() {
     setDialogoAberto(true)
   }
   
-  const excluirAgendamento = (id: number | string) => {
-    const agendamento = agendamentos.find(a => a.id === id)
+  const excluirAgendamento = async (id: number | string) => {
+  const agendamento = agendamentos.find(a => a.id === id)
 
-    // Verificar se o agendamento pode ser excluído
-    if (agendamento && !podeEditarAgendamento(agendamento.status)) {
-      alert("Este agendamento não pode ser excluído pois já foi concluído ou cancelado.")
+  if (!agendamento || !podeEditarAgendamento(agendamento.status)) {
+    alert("Este agendamento não pode ser cancelado pois já foi concluído ou cancelado.")
+    return
+  }
+
+  const token = localStorage.getItem("token")
+    if (!token) {
+      alert("Token não encontrado")
       return
     }
 
-    setAgendamentos((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, status: "CANCELED" } : a))
-    )
+    try {
+      await cancelarAgendamentoService(id, token)
 
+      setAgendamentos((prev) =>
+        prev.map((a) =>
+          a.id === id ? { ...a, status: "cancelado" } : a
+        )
+      )
+
+      alert("Agendamento cancelado com sucesso.")
+    } catch (error) {
+      console.error(error)
+      alert("Erro ao cancelar o agendamento.")
+    }
   }
 
   const salvarAgendamento = async () => {
