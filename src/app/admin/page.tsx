@@ -27,6 +27,9 @@ import ComponentCalendar from "@/components/calendar"
 import CadastrarFuncionarioModal from "@/components/feature/employee/cadastrarFuncionarioModal"
 import { UserPlus } from "lucide-react"
 
+//Importação para tabela de cidadãos
+import CitizenTable from "@/components/feature/citizen/CitizenTable"
+
 
 export default function AdminPage() {
   const [token, setToken] = useState<string | null>(null)
@@ -168,9 +171,10 @@ export default function AdminPage() {
         {/* Conteúdo principal */}
         <div className="flex-1 p-6">
           <Tabs defaultValue="appointments" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsList className="grid w-full grid-cols-3 mb-4">
               <TabsTrigger value="appointments">Agendamentos</TabsTrigger>
               <TabsTrigger value="employees">Funcionários</TabsTrigger>
+              <TabsTrigger value="citizens">Cidadãos</TabsTrigger>
             </TabsList>
 
             <TabsContent value="appointments" className="space-y-4">
@@ -252,6 +256,18 @@ export default function AdminPage() {
                 </CardContent>
               </Card>
             </TabsContent>
+
+            <TabsContent value="citizens" className="space-y-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg">Cidadãos</CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <CitizenTable />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
           </Tabs>
         </div>
       </div>
