@@ -54,7 +54,7 @@ export const AppointmentTable: React.FC<AppointmentTableProps> = ({
                   {StatusHelper.getWasteTypeText(appointment.wasteItem.type)}
                 </Badge>
                 <div className="text-sm text-gray-500 mt-1">
-                  {appointment.wasteItem.description}
+                  {(appointment.optional_photo_url) ? appointment.optional_photo_url : 'Nenhuma foto anexada'}
                 </div>
               </div>
             </TableCell>
