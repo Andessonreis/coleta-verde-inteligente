@@ -2,12 +2,13 @@ import { PerfilFuncionario } from "@/types/funcionario"
 
 export function mapApiToPerfilFuncionario(apiData: any): PerfilFuncionario {
   return {
+    id: apiData.id,
     nome: apiData.name || "",
     matricula: apiData.registration || "",
     email: apiData.email || "",
-    telefone: apiData.phone || "", // TODO: preencher quando backend enviar
+    telefone: apiData.phone || "", 
     cargo: apiData.jobTitle || "",
-    setor: "", // TODO: preencher quando backend enviar
+    setor: "", 
     dataAdmissao: apiData.createdAt || "",
     avatar: "", // TODO: preencher quando backend enviar
     estatisticas: {

@@ -1,6 +1,7 @@
 export interface PerfilFuncionario {
+  id: string
   nome: string
-  matricula?: string
+  matricula: string
   email: string
   telefone?: string
   cargo?: string

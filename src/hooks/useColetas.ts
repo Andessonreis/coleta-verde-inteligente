@@ -41,11 +41,13 @@ export function useColetas() {
         status: converterStatus(item.status),
         observacoes: item.observacoes || "",
         cidadao: {
+          id: item.requester.id,     
           nome: item.requester.name,
           telefone: item.requester.phone,
         },
-        coordenadas: undefined,
+        coordenadas: undefined, 
       }))
+      
 
       setColetas(mappedColetas)
     } catch (error) {

@@ -23,7 +23,8 @@ export function useAvailableDates() {
   const fetchAvailability = async () => {
     setLoading(true)
     try {
-      const response = await fetch("/api/appointments/availability")
+      const response = await fetch("http://localhost:8080/api/appointments/availability")
+
       if (!response.ok) throw new Error("Erro ao buscar disponibilidade")
   
       const data: AvailabilityResponse = await response.json()

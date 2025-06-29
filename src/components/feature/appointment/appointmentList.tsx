@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Calendar, Timer, CheckCircle2 } from "lucide-react"
 import AppointmentCard from "@/components/feature/appointment/appointmentCard"
+import type { Agendamento } from "@/types/appointment"
 
 interface AppointmentListProps {
   agendamentos: Agendamento[]
