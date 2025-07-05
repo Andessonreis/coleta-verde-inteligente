@@ -7,7 +7,7 @@ export interface Penalidade {
   tipo: "OTHER" | "RESIDUE_MISMATCH" | "DANGEROUS_MATERIAL" | "UNAUTHORIZED_ITEM" | "VOLUME_EXCEEDED"
   descricao: string
   fotoEvidencia: string
-  status: "PENDENTE_ANALISE" | "APROVADA" | "REJEITADA"
+  status: "PENDING_ANALYSIS" | "APPROVED" | "REJECTED"
   dataReporte: string
   dataAnalise?: string
   observacoesAnalista?: string
@@ -15,19 +15,28 @@ export interface Penalidade {
   dataInicioBloqueio?: string
   dataFimBloqueio?: string
   cidadao: {
-    nome: string
+    name: string
     email: string
     telefone: string
     endereco: string
   }
   funcionario: {
     nome: string
-    registro: string
+    registration: string
   }
   analista?: {
     nome: string
     registro: string
   }
+}
+
+export interface NovaPenalidade {
+  coletaId: string
+  cidadaoId: string
+  funcionarioId: string
+  tipo: Penalidade["tipo"]
+  descricao: string
+  fotoEvidencia: string
 }
 
 export interface BloqueioAtivo {

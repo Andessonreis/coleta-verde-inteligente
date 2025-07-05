@@ -21,6 +21,7 @@ export function usePenalidades() {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       const data = await response.json();
+     
       setPenalidades(data);
     } catch (error) {
       console.error("Erro ao buscar penalidades:", error);
@@ -61,7 +62,7 @@ export function usePenalidades() {
         },
         body: JSON.stringify(payload),
       });
-
+      console.log("Response: ", response)
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`HTTP ${response.status} - ${errorText}`);
@@ -75,13 +76,16 @@ export function usePenalidades() {
       return undefined;
     }
   };
-
   const analisarPenalidade = async (
     penalidadeId: string,
-    aprovada: boolean,
-    observacoes: string,
-    analistaId: string
+    aprovada: boolean, 
+    observacoes: string
   ): Promise<void> => {
+    const payload = {
+      approved: aprovada,    
+      observations: observacoes,  
+    };
+
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
@@ -92,14 +96,11 @@ export function usePenalidades() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            aprovada,
-            observacoes,
-            analistaId,
-          }),
+          // Envie o payload corrigido
+          body: JSON.stringify(payload),
         }
       );
-
+        
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`HTTP ${response.status} - ${errorText}`);
@@ -128,6 +129,7 @@ export function usePenalidades() {
       }
     } catch (error) {
       console.error("Erro ao analisar penalidade:", error);
+      throw error; 
     }
   };
 

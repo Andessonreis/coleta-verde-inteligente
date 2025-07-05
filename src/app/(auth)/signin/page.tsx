@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { SuspendedAccountPopup } from '@/components/feature/penalidades/SuspendedAccountPopup';
 
 interface LoginResponse {
   token: string;
   role: 'CITIZEN' | 'EMPLOYEE' | 'ADMIN';
+  jobTitle?: string;
   message?: string;
 }
 
@@ -16,62 +18,78 @@ const ROUTES: Record<string, string> = {
   CITIZEN: '/citizen',
   EMPLOYEE: '/employee',
   ADMIN: '/admin',
+  ANALISTA_PENALIDADES: '/employee/analista-penalidades',
 };
 
 export default function SignInPage() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [unlockDate, setUnlockDate] = useState<Date | null>(null);
   const router = useRouter();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
-
     if (!email.trim() || !password.trim()) {
       alert('Por favor, preencha todos os campos.');
       return;
     }
-
     setIsLoading(true);
 
     try {
       const response = await fetch('http://localhost:8080/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          email: email.trim(), 
-          password: password.trim() 
-        }),
+        body: JSON.stringify({ email: email.trim(), password: password.trim() }),
       });
 
-      const data: LoginResponse = await response.json();
-
       if (!response.ok) {
-        alert(data.message || 'Email ou senha incorretos.');
+        if (response.status === 403) {
+
+          const suspensionMessage = await response.text();
+
+          const dateString = suspensionMessage.split(': ')[1];
+
+          if (dateString) {
+            const dateObject = new Date(dateString);
+
+            setUnlockDate(dateObject);
+          } else {
+          }
+
+        } else {
+          try {
+            const errorData = await response.json();
+            alert(errorData.message || 'Email ou senha incorretos.');
+          } catch {
+             alert('Email ou senha incorretos.');
+          }
+        }
         return;
       }
 
+      const data: LoginResponse = await response.json();
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', data.role);
+      localStorage.setItem('jobTitle', data.jobTitle || '');
+      redirectUser(data.role, data.jobTitle);
 
-      redirectUserByRole(data.role);
     } catch (error) {
       console.error('Erro durante o login:', error);
-      alert('Erro de conexão. Verifique o servidor e tente novamente.');
+      alert('Ocorreu um erro de conexão. Tente novamente.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const redirectUserByRole = (role: string): void => {
-    const target = ROUTES[role];
-    
-    if (!target) {
+  const redirectUser = (role: string, jobTitle?: string): void => {
+    if (role === 'EMPLOYEE' && jobTitle === 'ANALISTA_PENALIDADES') {
+      router.push(ROUTES.ANALISTA_PENALIDADES);
+    } else if (ROUTES[role]) {
+      router.push(ROUTES[role]);
+    } else {
       alert('Tipo de usuário desconhecido.');
-      return;
     }
-
-    router.push(target);
   };
   
   return (
@@ -232,6 +250,13 @@ export default function SignInPage() {
           </motion.div>
         </div>
       </motion.div>
+      {unlockDate && (
+        <SuspendedAccountPopup
+          unlockDate={unlockDate}
+          onClose={() => setUnlockDate(null)}
+        />
+      )}
     </div>
+    
   );
 }

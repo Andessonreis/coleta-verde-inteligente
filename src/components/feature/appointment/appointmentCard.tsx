@@ -1,11 +1,12 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import type { Agendamento } from "@/types/appointment"
 import { tiposResiduoOptions } from "@/types/tiposResiduoOptions"
 import { getStatusIcon } from "@/utils/appointmentUtils"
 import { formatDateElegant } from "@/utils/formatters"
 
-import { Trash2, Package, Edit3, AlertCircle, CheckCircle2, XCircle, Timer } from "lucide-react"
+import { Trash2, Package, Edit3, AlertCircle } from "lucide-react"
 
 interface AppointmentCardProps {
   agendamento: Agendamento
