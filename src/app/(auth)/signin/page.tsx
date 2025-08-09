@@ -9,7 +9,7 @@ import { SuspendedAccountPopup } from '@/components/feature/penalidades/Suspende
 
 interface LoginResponse {
   token: string;
-  role: 'CITIZEN' | 'EMPLOYEE' | 'ADMIN' | 'BUSINESS';
+  role: 'CITIZEN' | 'EMPLOYEE' | 'ADMIN' | 'BUSINESS' | 'COMPANY';
   jobTitle?: string;
   message?: string;
 }
@@ -18,7 +18,8 @@ const ROUTES: Record<string, string> = {
   CITIZEN: '/citizen',
   EMPLOYEE: '/employee',
   ADMIN: '/admin',
-  BUSINESS: '/business'
+  BUSINESS: '/business',
+  COMPANY: '/company',
   ANALISTA_PENALIDADES: '/employee/analista-penalidades',
 };
 
