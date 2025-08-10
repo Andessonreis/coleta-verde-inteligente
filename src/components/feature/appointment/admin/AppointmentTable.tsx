@@ -40,11 +40,14 @@ export const AppointmentTable: React.FC<AppointmentTableProps> = ({
             <TableCell>
               <div className="text-sm">
                 <div>
-                  {appointment.requester.address.publicPlace}, {appointment.requester.address.number}
+                  {appointment.requester?.address
+                    ? `${appointment.requester?.address.publicPlace}, ${appointment.requester?.address.number}`
+                    : "Endereço não informado"}
                 </div>
                 <div className="text-gray-500">
-                  {appointment.requester.address.street}, {appointment.requester.address.city} -{" "}
-                  {appointment.requester.address.uf}
+                  {appointment.requester?.address
+                    ? `${appointment.requester?.address.street}, ${appointment.requester?.address.city} - ${appointment.requester?.address.uf}`
+                    : ""}
                 </div>
               </div>
             </TableCell>
