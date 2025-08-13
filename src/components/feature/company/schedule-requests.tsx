@@ -61,7 +61,7 @@ export function ScheduleRequests() {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const res = await fetch("http://localhost:8080/api/appointments", {
+        const res = await fetch("http://localhost:8080/api/appointments/company", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
