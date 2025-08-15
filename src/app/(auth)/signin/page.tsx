@@ -238,7 +238,7 @@ export default function SignInPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.6, delay: 1.3 }}
-                  className="text-center pt-4"
+                  className="text-center pt-4 space-y-3"
                 >
                   <Link 
                     href="/signup" 
@@ -246,6 +246,7 @@ export default function SignInPage() {
                   >
                     Não tem uma conta? <span className="font-bold">Registre-se</span>
                   </Link>
+
                 </motion.div>
               </form>
             </div>
