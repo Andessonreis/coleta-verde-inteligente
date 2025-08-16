@@ -10,7 +10,7 @@ import { DatePickerCalendar } from "@/components/date-picker-calendar"
 import { useAppointmentRestrictions } from "@/hooks/useAppointmentRestrictions"
 import { AppointmentRestrictionInfo } from "@/components/appointment-restriction-info"
 import { EmailConfirmationStatus } from "@/components/email-confirmation-status"
-import { EmailService, type EmailResponse } from "@/services/emailService"
+/* import { EmailService, type EmailResponse } from "@/services/emailService" */
 import type { Agendamento } from "@/types/appointment"
 import type { Usuario } from "@/types/citizen"
 
@@ -38,7 +38,7 @@ export default function AppointmentModal({
   agendamentos,
   usuario,
 }: AppointmentModalProps) {
-  const [emailStatus, setEmailStatus] = useState<EmailResponse | null>(null)
+/*   const [emailStatus, setEmailStatus] = useState<EmailResponse | null>(null) */
   const [isLoadingEmail, setIsLoadingEmail] = useState(false)
 
   // Hook sempre chamado, independente do estado do modal
@@ -74,16 +74,16 @@ export default function AppointmentModal({
       await salvarAgendamento()
 
       // Enviar e-mail de confirmação apenas para novos agendamentos
-      if (!modoEdicao && usuario) {
+/*       if (!modoEdicao && usuario) {
         await sendConfirmationEmail()
-      }
+      } */
     } catch (error) {
       console.error("Erro ao processar agendamento:", error)
     } finally {
       setIsLoadingEmail(false)
     }
   }
-
+/*
   const sendConfirmationEmail = async () => {
     if (!usuario || !agendamento) return
 
@@ -109,12 +109,12 @@ export default function AppointmentModal({
         message: "Erro ao enviar e-mail de confirmação",
       })
     }
-  }
+  } */
 
   const handleClose = () => {
     setAberto(false)
     // Limpar estados quando fechar
-    setEmailStatus(null)
+/*     setEmailStatus(null) */
     setIsLoadingEmail(false)
   }
 
@@ -209,12 +209,12 @@ export default function AppointmentModal({
           </div>
 
           {/* Status do E-mail */}
-          <EmailConfirmationStatus
+          {/* <EmailConfirmationStatus
             emailStatus={emailStatus}
             isLoading={isLoadingEmail}
             onResendEmail={sendConfirmationEmail}
           />
-
+ */}
           {/* Botões */}
           <div className="flex gap-3 pt-4 border-t border-gray-200">
             <Button type="button" variant="outline" onClick={handleClose} className="flex-1">

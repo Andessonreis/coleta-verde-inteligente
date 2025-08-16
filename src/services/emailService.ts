@@ -1,4 +1,4 @@
-"use client"
+/* "use client"
 
 export interface EmailConfirmationData {
   appointmentId: string
@@ -126,3 +126,4 @@ export class EmailService {
     return wasteTypeMap[wasteType] || wasteType
   }
 }
+ */
