@@ -25,9 +25,9 @@ export function BusinessDataStep({ formData, errors, updateFormData }: BusinessD
         <Label htmlFor="nomeFantasia">Nome Fantasia</Label>
         <Input
           id="nomeFantasia"
-          value={formData.nomeFantasia}
-          onChange={(e) => updateFormData("nomeFantasia", e.target.value)}
-          className={errors.nomeFantasia ? "border-red-500" : ""}
+          value={formData.name}
+          onChange={(e) => updateFormData("name", e.target.value)}
+          className={errors.name ? "border-red-500" : ""}
         />
       </div>
 

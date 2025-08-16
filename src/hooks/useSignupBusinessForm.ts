@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 
 export interface FormData {
-  nomeFantasia: string
+  name: string
   cnpj: string
   email: string
   phone: string
@@ -31,7 +31,7 @@ export function useSignupForm() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(0)
   const [formData, setFormData] = useState<FormData>({
-    nomeFantasia: "",
+    name: "",
     cnpj: "",
     email: "",
     phone: "",
@@ -107,7 +107,7 @@ export function useSignupForm() {
     const newErrors: Record<string, string> = {}
 
     if (stepIndex === 0) {
-      if (!formData.nomeFantasia.trim()) newErrors.nomeFantasia = "Nome Fantasia é obrigatório"
+      if (!formData.name.trim()) newErrors.nomeFantasia = "Nome Fantasia é obrigatório"
       if (!formData.cnpj.trim()) newErrors.cnpj = "CNPJ é obrigatório"
       if (!formData.email.trim()) newErrors.email = "Email é obrigatório"
       else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = "Email inválido"
@@ -138,7 +138,7 @@ export function useSignupForm() {
     setIsSubmitting(true)
 
     const payload = {
-      nomeFantasia: formData.nomeFantasia,
+      nomeFantasia: formData.name,
       cnpj: formData.cnpj.replace(/\D/g, ""),
       email: formData.email,
       phone: formData.phone.replace(/\D/g, ""),
@@ -155,7 +155,7 @@ export function useSignupForm() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/register-company", {
+      const response = await fetch("http://localhost:8080/api/companies", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

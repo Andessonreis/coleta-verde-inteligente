@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Leaf, ArrowLeft, ArrowRight, CheckCircle, Loader2 } from "lucide-react"
 import Image from "next/image"
-import { useSignupForm } from "@/hooks/useSignupForm"
+import { useSignupForm } from "@/hooks/useSignupBusinessForm"
+
 import { StepProgress, AddressStep, ConfirmationStep, STEPS_CONFIG } from "@/components/signup-steps"
 
 //import { BusinessDataStep } from "@/components/feature/company/company-data-step"
@@ -64,7 +65,7 @@ export default function SignupCompanyPage() {
       case 0:
         return (
           <BusinessDataStep
-            formData={formData}          
+            formData={formData}
             errors={errors}
             updateFormData={updateFormData}
           />
@@ -85,47 +86,66 @@ export default function SignupCompanyPage() {
     }
   }
 
-  return (
+return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-2xl">
         <CardHeader className="text-center pb-2">
-          <Image
-            src="/assets/coleta-verde.png"
-            alt="Coleta Verde"
-            width={120}
-            height={120}
-            priority
-            className="mx-auto drop-shadow-lg"
-          />
+          <div className="mb-4">
+            <Image
+              src="/assets/coleta-verde.png?height=120&width=120"
+              alt="Coleta Verde"
+              width={120}
+              height={120}
+              priority
+              className="mx-auto drop-shadow-lg"
+            />
+          </div>
           <div className="flex items-center justify-center gap-2 mb-2">
             <Leaf className="h-6 w-6 text-green-600" />
-            <CardTitle className="text-2xl font-bold text-green-800">Cadastro de Empresa</CardTitle>
+            <CardTitle className="text-2xl font-bold text-green-800">Coleta Verde</CardTitle>
           </div>
           <p className="text-gray-600">Cadastre sua empresa para contribuir com a coleta sustentável</p>
         </CardHeader>
 
         <CardContent className="p-6">
+          {/* Barra de progresso */}
           <StepProgress currentStep={currentStep} totalSteps={STEPS_CONFIG.length} />
+
+          {/* Renderizar step atual */}
           {renderCurrentStep()}
 
+          {/* Botões de navegação */}
           <div className="flex justify-between mt-8">
-            <Button variant="outline" onClick={prevStep} disabled={currentStep === 0}>
-              <ArrowLeft className="h-4 w-4" /> Anterior
+            <Button
+              variant="outline"
+              onClick={prevStep}
+              disabled={currentStep === 0}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Anterior
             </Button>
 
             {currentStep < STEPS_CONFIG.length - 1 ? (
-              <Button onClick={nextStep} className="bg-green-600 hover:bg-green-700">
-                Próximo <ArrowRight className="h-4 w-4" />
+              <Button onClick={nextStep} className="bg-green-600 hover:bg-green-700 flex items-center gap-2">
+                Próximo
+                <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button onClick={handleSubmit} disabled={isSubmitting} className="bg-green-600 hover:bg-green-700">
+              <Button
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className="bg-green-600 hover:bg-green-700 flex items-center gap-2"
+              >
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin" /> Processando...
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Processando...
                   </>
                 ) : (
                   <>
-                    <CheckCircle className="h-4 w-4" /> Finalizar Cadastro
+                    <CheckCircle className="h-4 w-4" />
+                    Finalizar Cadastro
                   </>
                 )}
               </Button>
