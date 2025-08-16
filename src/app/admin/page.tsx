@@ -25,6 +25,7 @@ import ComponentCalendar from "@/components/calendar"
 
 import CadastrarFuncionarioModal from "@/components/feature/employee/cadastrarFuncionarioModal"
 import { UserPlus } from "lucide-react"
+import { AppointmentCharts } from "@/components/feature/admin/appointment-charts"
 
 export default function AdminPage() {
   const [token, setToken] = useState<string | null>(null)
@@ -162,9 +163,10 @@ export default function AdminPage() {
         {/* Conteúdo principal */}
         <div className="flex-1 p-6">
           <Tabs defaultValue="appointments" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsList className="grid w-full grid-cols-3 mb-4">
               <TabsTrigger value="appointments">Agendamentos</TabsTrigger>
               <TabsTrigger value="employees">Funcionários</TabsTrigger>
+              <TabsTrigger value="graphs">Gráfico</TabsTrigger>
             </TabsList>
 
             <TabsContent value="appointments" className="space-y-4">
@@ -245,6 +247,9 @@ export default function AdminPage() {
                   </Table>
                 </CardContent>
               </Card>
+            </TabsContent>
+            <TabsContent value="graphs" className="space-y-4">
+              <AppointmentCharts stats={stats} />
             </TabsContent>
           </Tabs>
         </div>
