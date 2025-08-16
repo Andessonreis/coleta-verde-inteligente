@@ -281,6 +281,11 @@ export default function HomePage() {
                     Cadastrar-se
                   </Button>
                 </Link>
+                <Link href="/signup-business">
+                  <Button size="lg" variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
+                    Cadastre sua Empresa
+                  </Button>
+                </Link>
                 <Link href="/signin">
                   <Button size="lg" variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
                     Sou Funcionário da Prefeitura
