@@ -81,7 +81,7 @@ export default function CompanyDashboard() {
 
         <div className="grid gap-6 lg:grid-cols-12">
           <div className="lg:col-span-8">
-            <ScheduleRequests agendamentos={agendamentos} />
+            <ScheduleRequests/>
           </div>
           <div className="lg:col-span-4 space-y-6">
             <FrequencySettings />

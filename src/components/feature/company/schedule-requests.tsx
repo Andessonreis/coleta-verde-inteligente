@@ -24,6 +24,7 @@ interface Agendamento {
   type: string;
 }
 
+
 export function ScheduleRequests() {
   const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -97,7 +98,7 @@ export function ScheduleRequests() {
           };
         });
 
-        mapped.sort((a, b) => b.dateObj.getTime() - a.dateObj.getTime());
+        mapped.sort((a: { dateObj: { getTime: () => number; }; }, b: { dateObj: { getTime: () => number; }; }) => b.dateObj.getTime() - a.dateObj.getTime());
 
         setAgendamentos(mapped);
       } catch (error) {

@@ -138,7 +138,7 @@ export function useSignupForm() {
     setIsSubmitting(true)
 
     const payload = {
-      nomeFantasia: formData.name,
+      name: formData.name,
       cnpj: formData.cnpj.replace(/\D/g, ""),
       email: formData.email,
       phone: formData.phone.replace(/\D/g, ""),
@@ -159,6 +159,7 @@ export function useSignupForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+
       })
       if (!response.ok) throw new Error("Erro no cadastro")
       setIsSuccess(true)
