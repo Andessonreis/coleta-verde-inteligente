@@ -35,6 +35,7 @@ export function BusinessDataStep({ formData, errors, updateFormData }: BusinessD
         <Label htmlFor="cnpj">CNPJ</Label>
         <Input
           id="cnpj"
+          maxLength={18}
           value={formData.cnpj}
           onChange={(e) => updateFormData("cnpj", e.target.value)}
           className={errors.cnpj ? "border-red-500" : ""}
@@ -56,6 +57,7 @@ export function BusinessDataStep({ formData, errors, updateFormData }: BusinessD
         <Label htmlFor="phone">Telefone</Label>
         <Input
           id="phone"
+          maxLength={11}
           value={formData.phone}
           onChange={(e) => updateFormData("phone", e.target.value)}
           className={errors.phone ? "border-red-500" : ""}
