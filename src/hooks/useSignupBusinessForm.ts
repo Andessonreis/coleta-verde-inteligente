@@ -57,6 +57,18 @@ export function useSignupForm() {
     return numbers.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3")
   }
 
+  // formata CNPJ
+  const formatCNPJ = (value: string) => {
+    let numbers = value.replace(/\D/g, "")
+    numbers = numbers.slice(0, 14) // máximo 14 dígitos
+
+    return numbers
+      .replace(/^(\d{2})(\d)/, "$1.$2")
+      .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+      .replace(/\.(\d{3})(\d)/, ".$1/$2")
+      .replace(/(\d{4})(\d)/, "$1-$2")
+  }
+
   const formatCEP = (value: string) => value.replace(/\D/g, "").replace(/(\d{5})(\d{3})/, "$1-$2")
 
   const calculatePasswordStrength = (password: string): number => {
@@ -97,6 +109,7 @@ export function useSignupForm() {
     if (field === "phone") formattedValue = formatPhone(value)
     else if (field === "zipCode") formattedValue = formatCEP(value)
     else if (field === "uf") formattedValue = value.toUpperCase()
+    else if (field === "cnpj") formattedValue = formatCNPJ(value)
 
     setFormData((prev) => ({ ...prev, [field]: formattedValue }))
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }))
@@ -188,5 +201,6 @@ export function useSignupForm() {
     validateStep,
     formatPhone,
     formatCEP,
+    formatCNPJ,
   }
 }

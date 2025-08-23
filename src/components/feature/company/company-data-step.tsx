@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
-import type { FormData } from "@/hooks/useSignupBusinessForm"
+import type { FormData } from "@/hooks/useSignupBusinessForm" 
 
 interface BusinessDataStepProps {
   formData: FormData
@@ -35,8 +35,10 @@ export function BusinessDataStep({ formData, errors, updateFormData }: BusinessD
         <Label htmlFor="cnpj">CNPJ</Label>
         <Input
           id="cnpj"
+          maxLength={18}
           value={formData.cnpj}
-          onChange={(e) => updateFormData("cnpj", e.target.value)}
+          onChange={(e) => updateFormData("cnpj", e.target.value)
+          }
           className={errors.cnpj ? "border-red-500" : ""}
         />
       </div>
